@@ -7,7 +7,8 @@ const carRentalSchema = new mongoose.Schema({
     required: true,
   },
   carId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Car",
     required: true,
   },
   startDate: {

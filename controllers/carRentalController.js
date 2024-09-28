@@ -1,5 +1,6 @@
 const CarRental = require("../models/carRental");
 const User = require("../models/user");
+const Car = require("../models/car");
 
 const createRental = async (req, res) => {
   try {
@@ -20,6 +21,16 @@ const createRental = async (req, res) => {
       });
     }
 
+    // Check if car is available
+    const car = await Car.findById(carId);
+    if (!car || !car.available) {
+      return res.status(400).json({
+        success: false,
+        message: "Car is not available for rent",
+      });
+    }
+
+    // Create new rental
     const newRental = new CarRental({
       userId,
       carId,
@@ -27,6 +38,10 @@ const createRental = async (req, res) => {
       endDate,
       totalCost,
     });
+
+    // Update car availability
+    car.available = false;
+    await car.save();
 
     await newRental.save();
     res.status(201).json({ success: true, rental: newRental });
@@ -63,6 +78,11 @@ const updateRentalStatus = async (req, res) => {
       return res
         .status(404)
         .json({ success: false, message: "Rental not found or unauthorized" });
+    }
+
+    // If rental is completed or cancelled, make the car available again
+    if (status === "completed" || status === "cancelled") {
+      await Car.findByIdAndUpdate(rental.carId, { available: true });
     }
 
     res.json({ success: true, rental });
