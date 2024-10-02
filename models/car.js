@@ -12,7 +12,7 @@ const carSchema = new mongoose.Schema({
   pricePerDay: { type: Number, required: true },
   available: { type: Boolean, default: true },
   features: [String],
-  images: [String],
+  images: [String], // This will store an array of base64 encoded images
   location: {
     type: { type: String, default: "Point" },
     coordinates: [Number],

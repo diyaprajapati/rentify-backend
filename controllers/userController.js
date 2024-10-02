@@ -1,8 +1,5 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const axios = require("axios");
-const config = require("config");
-
 const User = require("../models/user");
 
 const signinController = async (req, res) => {
@@ -77,13 +74,24 @@ const signupController = async (req, res) => {
 const updateUserProfile = async (req, res) => {
   try {
     const userId = req.user;
-    const { drivingLicensePhoto, address, mobileNumber } = req.body;
+    const { address, mobileNumber } = req.body;
+    let drivingLicensePhoto = null;
 
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { drivingLicensePhoto, address, mobileNumber },
-      { new: true, runValidators: true }
-    );
+    if (req.file) {
+      const base64Image = req.file.buffer.toString("base64");
+      drivingLicensePhoto = `data:${req.file.mimetype};base64,${base64Image}`;
+    }
+
+    const updateData = {
+      address,
+      mobileNumber,
+      ...(drivingLicensePhoto && { drivingLicensePhoto }),
+    };
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!updatedUser) {
       return res
@@ -97,9 +105,28 @@ const updateUserProfile = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+const getUserProfile = async (req, res) => {
+  try {
+    const userId = req.user;
+    const user = await User.findById(userId).select("-googleId -password");
+    console.log(user)
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    res.json({ success: true, user });
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
 
 module.exports = {
   signinController,
   signupController,
   updateUserProfile,
+  getUserProfile,
 };

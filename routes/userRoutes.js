@@ -1,10 +1,18 @@
-const express = require("express")
+const express = require("express");
+const {
+  signinController,
+  signupController,
+  updateUserProfile,
+  getUserProfile,
+} = require("../controllers/userController");
+const authMiddleware = require("../middleware/auth");
+const upload = require("../utils/fileUpload");
 
-const { signinController, signupController } = require("../controllers/userController")
+const router = express.Router();
 
-const router = express.Router()
-
-router.post("/signin", signinController)
-router.post("/signup", signupController)
+router.post("/signin", signinController);
+router.post("/signup", signupController);
+router.put("/profile", authMiddleware, upload.single, updateUserProfile);
+router.get("/profile", authMiddleware, getUserProfile);
 
 module.exports = router;

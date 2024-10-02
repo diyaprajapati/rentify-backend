@@ -18,8 +18,6 @@ app.use(express.json());
 app.use(cors({ origin: "http://localhost:3000" }));
 
 // Routes
-app.use("/users", userRoutes);
-app.use("/api/cars", require("./routes/carRoutes"));
 
 app.post("/api/google-login", async (req, res) => {
   const { token } = req.body;
@@ -55,6 +53,8 @@ app.post("/api/google-login", async (req, res) => {
   }
 });
 
+app.use("/users", userRoutes);
+app.use("/api/cars", require("./routes/carRoutes"));
 app.get("/", (req, res) => {
   res.send("Welcome to Rentify Drive API");
 });
