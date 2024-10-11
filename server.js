@@ -42,11 +42,13 @@ app.post("/api/google-login", async (req, res) => {
       await user.save();
     }
     // 04. Generate a session token for the authenticated user
-    const sessionToken = jwt.sign({ userId: user._id }, JWT_SECRET, {
-      expiresIn: "1h",
-    });
-    // 05. Send the session token to the client
-    res.json({ success: true, sessionToken });
+    const sessionToken = jwt.sign(
+      { userId: user._id, role: user.role },
+      JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+    // 05. Send the session token and role to the client
+    res.json({ success: true, sessionToken, role: user.role });
   } catch (error) {
     console.error("Error verifying token:", error);
     res.status(401).json({ success: false, message: "Invalid token" });

@@ -13,10 +13,6 @@ const carSchema = new mongoose.Schema({
   available: { type: Boolean, default: true },
   features: [String],
   images: [String], // This will store an array of base64 encoded images
-  location: {
-    type: { type: String, default: "Point" },
-    coordinates: [Number],
-  },
 });
 
 carSchema.index({ location: "2dsphere" });

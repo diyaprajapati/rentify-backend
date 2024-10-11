@@ -11,7 +11,7 @@ const authMiddleware = (req, res, next) => {
   try {
     const onlyToken = token.split(" ")[1];
     const decoded = jwt.verify(onlyToken, JWT_SECRET);
-    req.user = decoded.userId;
+    req.user = { userId: decoded.userId, role: decoded.role };
     next();
   } catch (err) {
     res.status(401).json({ message: "Token is not valid" });
