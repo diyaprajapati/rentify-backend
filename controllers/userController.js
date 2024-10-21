@@ -88,7 +88,7 @@ const updateUserProfile = async (req, res) => {
       ...(drivingLicensePhoto && { drivingLicensePhoto }),
     };
 
-    const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
+    const updatedUser = await User.findByIdAndUpdate(userId.user, updateData, {
       new: true,
       runValidators: true,
     });
@@ -108,8 +108,10 @@ const updateUserProfile = async (req, res) => {
 const getUserProfile = async (req, res) => {
   try {
     const userId = req.user;
-    const user = await User.findById(userId).select("-googleId -password");
-    console.log(user)
+    const user = await User.findById(userId.userId).select(
+      "-googleId -password"
+    );
+    console.log(user);
 
     if (!user) {
       return res

@@ -50,7 +50,7 @@ const updateCar = async (req, res) => {
 
 const getCars = async (req, res) => {
   try {
-    const cars = await Car.find({ available: true });
+    const cars = await Car.find();
     res.json({ success: true, cars });
   } catch (error) {
     console.error("Error fetching cars:", error);

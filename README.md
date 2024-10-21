@@ -214,6 +214,33 @@ Most endpoints require authentication. Include the JWT token in the Authorizatio
   }
   ```
 
+#### Update Payment Status
+- **PUT** `/rentals/:rentalId/payment`
+- **Authentication:** Required
+- **Body:**
+  ```json
+  {
+    "paymentReferenceNumber": "REF123456",
+    "paymentStatus": "paid"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "success": true,
+    "rental": {
+      "userId": "user_id_here",
+      "carId": "car_id_here",
+      "startDate": "2023-05-01T00:00:00.000Z",
+      "endDate": "2023-05-05T00:00:00.000Z",
+      "totalCost": 200,
+      "status": "confirmed",
+      "paymentReferenceNumber": "REF123456",
+      "paymentStatus": "paid"
+    }
+  }
+  ```
+
 ## Error Responses
 All endpoints may return the following error response:
 

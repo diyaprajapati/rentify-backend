@@ -32,6 +32,15 @@ const carRentalSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  paymentReferenceNumber: {
+    type: String,
+    default: null,
+  },
+  paymentStatus: {
+    type: String,
+    enum: ["pending", "paid", "failed"],
+    default: "pending",
+  },
 });
 
 module.exports = mongoose.model("CarRental", carRentalSchema);
