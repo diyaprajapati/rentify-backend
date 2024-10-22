@@ -241,6 +241,36 @@ Most endpoints require authentication. Include the JWT token in the Authorizatio
   }
   ```
 
+#### Get Pending Rentals with Payment
+- **GET** `/rentals/pending-with-payment`
+- **Authentication:** Required (Admin only)
+- **Response:**
+  ```json
+  {
+    "success": true,
+    "rentals": [
+      {
+        "_id": "rental_id_here",
+        "userId": {
+          "_id": "user_id_here",
+          "name": "John Doe"
+        },
+        "carId": {
+          "_id": "car_id_here",
+          "make": "Toyota",
+          "model": "Camry"
+        },
+        "startDate": "2023-05-01T00:00:00.000Z",
+        "endDate": "2023-05-05T00:00:00.000Z",
+        "totalCost": 200,
+        "status": "pending",
+        "paymentReferenceNumber": "REF123456"
+      },
+      // ... more rentals
+    ]
+  }
+  ```
+
 ## Error Responses
 All endpoints may return the following error response:
 

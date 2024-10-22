@@ -78,10 +78,9 @@ const updateRentalStatus = async (req, res) => {
   try {
     const { rentalId } = req.params;
     const { status } = req.body;
-    const userId = req.user;
 
-    const rental = await CarRental.findOneAndUpdate(
-      { _id: rentalId, userId },
+    const rental = await CarRental.findByIdAndUpdate(
+      rentalId,
       { status },
       { new: true }
     );
@@ -89,7 +88,7 @@ const updateRentalStatus = async (req, res) => {
     if (!rental) {
       return res
         .status(404)
-        .json({ success: false, message: "Rental not found or unauthorized" });
+        .json({ success: false, message: "Rental not found" });
     }
 
     // If rental is completed or cancelled, make the car available again
@@ -252,10 +251,27 @@ const carRentalDashboard = async (req, res) => {
   }
 };
 
+const getPendingRentalsWithPayment = async (req, res) => {
+  try {
+    const pendingRentals = await CarRental.find({
+      status: "pending",
+      paymentReferenceNumber: { $ne: null },
+    })
+      .populate("userId", "name")
+      .populate("carId", "make model");
+
+    res.json({ success: true, rentals: pendingRentals });
+  } catch (error) {
+    console.error("Error fetching pending rentals with payment:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 module.exports = {
   createRental,
   getUserRentals,
   updateRentalStatus,
   updatePaymentStatus,
   carRentalDashboard,
+  getPendingRentalsWithPayment,
 };
